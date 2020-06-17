@@ -26,8 +26,10 @@ app.get('/', function (req, res, next) {
     var responseText = 'Hello World!<br>'
     responseText += '<small> Request at: ' + req.requestTime + '</small>'
     res.send(responseText)
+    req.LoggedIn = 123;
     next()
 }, function(req,res) {
+    console.log(req);
     console.log("next");
 })
 

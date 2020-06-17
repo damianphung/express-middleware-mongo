@@ -49,6 +49,7 @@ passport.deserializeUser(UserDetails.deserializeUser());
 
 /* ROUTES */
 const connectEnsureLogin = require('connect-ensure-login');
+
 app.post('/login', (req, res, next) => {
     passport.authenticate('local', 
         (err, user, info) => {
@@ -59,15 +60,30 @@ app.post('/login', (req, res, next) => {
                 return res.redirect('/login?info=' +info);
             }
 
+
+            // set by passport internally
             req.logIn(user, function(err) {
                 if(err) {
                     return next(err);
                 }
                 return res.redirect('/');
             });
-        })(req, res, next);
+        }
+    )(req, res, next);
 });
 
+/*     app.get('/protected', function(req, res, next) {
+*       passport.authenticate('local', function(err, user, info, status) {
+*         if (err) { return next(err) }
+*         if (!user) { return res.redirect('/signin') }
+*         res.redirect('/account');
+*       })(req, res, next);
+*     });
+*/
+
+// Here: redirectTo and setReturnTo are options passed in to ensureLoggedIn().
+// Internally the function checks to see if isAuthenticated is true; declared from passport 
+// ensureLoggedIn({ redirectTo: '/session/new', setReturnTo: false }),
 app.get('/login',
   (req, res) => res.sendFile('html/login.html',
   { root: __dirname })
